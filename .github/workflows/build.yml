@@ -2,7 +2,7 @@ name: Build Batman Screensaver
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:  # permite lanzarlo manualmente desde GitHub
 
 jobs:
