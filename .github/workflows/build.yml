@@ -1,0 +1,53 @@
+name: Build Batman Screensaver
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # permite lanzarlo manualmente desde GitHub
+
+jobs:
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Crear .env con token de Telegram
+        run: |
+          echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} > .env
+          echo TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }} >> .env
+        shell: bash
+
+      - run: npm install
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Batman-Screensaver-Windows
+          path: dist/*.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Crear .env con token de Telegram
+        run: |
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" > .env
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+
+      - run: npm install
+      - run: npm run build:mac
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Batman-Screensaver-Mac
+          path: dist/*.dmg

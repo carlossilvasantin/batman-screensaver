@@ -1,0 +1,42 @@
+{
+  "name": "batman-screensaver",
+  "version": "1.0.0",
+  "description": "Batman screensaver para 9 pantallas con control via YarigAiBot (Telegram)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "prebuild": "node scripts/build-icon.js",
+    "build": "electron-builder --win --x64",
+    "build:mac": "node scripts/build-icon.js && electron-builder --mac"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.claudito.batman-screensaver",
+    "productName": "Batman Screensaver",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      ".env"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "shortcutName": "Batman Screensaver",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

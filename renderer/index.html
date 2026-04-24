@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      overflow: hidden;
+      cursor: none;
+      user-select: none;
+    }
+
+    canvas {
+      display: block;
+      position: fixed;
+      inset: 0;
+    }
+
+    #standby {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      color: #1a1a2e;
+      font-family: monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #standby.hidden {
+      opacity: 0;
+    }
+
+    #standby svg {
+      width: 60px;
+      opacity: 0.15;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="standby">
+    <!-- Bat silhouette placeholder -->
+    <svg viewBox="0 0 200 120" fill="#FFD700">
+      <ellipse cx="100" cy="75" rx="175" ry="110" />
+      <path fill="#000" d="
+        M100,90 C110,80 122,65 118,48 C130,38 142,48 138,64
+        C155,72 190,42 200,10 C185,30 188,55 170,65
+        C152,75 125,62 108,72
+        C106,76 103,80 100,85
+        C97,80 94,76 92,72
+        C75,62 48,75 30,65
+        C12,55 15,30 0,10
+        C10,42 45,72 62,64
+        C58,48 70,38 82,48
+        C78,65 90,80 100,90Z
+      "/>
+      <path fill="#000" d="M88,48 L72,-5 L108,44Z"/>
+      <path fill="#000" d="M112,48 L128,-5 L92,44Z"/>
+    </svg>
+    AdmiraBot esperando...
+  </div>
+
+  <canvas id="c"></canvas>
+  <script src="screensaver.js"></script>
+</body>
+</html>
