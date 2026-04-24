@@ -70,6 +70,19 @@
   </div>
 
   <canvas id="c"></canvas>
-  <script src="screensaver.js"></script>
+  <script>
+    window.batman.getAnimation().then((code) => {
+      const script = document.createElement('script');
+      if (code) {
+        // versión remota descargada de GitHub
+        const blob = new Blob([code], { type: 'application/javascript' });
+        script.src = URL.createObjectURL(blob);
+      } else {
+        // fallback: versión local del instalador
+        script.src = 'screensaver.js';
+      }
+      document.body.appendChild(script);
+    });
+  </script>
 </body>
 </html>

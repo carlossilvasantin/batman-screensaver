@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('batman', {
-  onCommand: (cb) => ipcRenderer.on('command', (_, data) => cb(data)),
+  onCommand:    (cb) => ipcRenderer.on('command', (_, data) => cb(data)),
+  getAnimation: ()  => ipcRenderer.invoke('get-animation'),
 });

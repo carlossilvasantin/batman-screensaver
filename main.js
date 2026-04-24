@@ -1,7 +1,33 @@
-const { app, BrowserWindow, screen, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain } = require('electron');
 const path = require('path');
+const https = require('https');
+const fs = require('fs');
 const { deflateSync } = require('zlib');
 require('dotenv').config();
+
+// ─── Remote Animation Loader ──────────────────────────────────────────────────
+
+const REMOTE_JS = 'https://raw.githubusercontent.com/carlossilvasantin/batman-screensaver/master/renderer/screensaver.js';
+let cachedAnimation = null; // JS code as string
+
+function fetchAnimation() {
+  return new Promise((resolve) => {
+    https.get(REMOTE_JS, (res) => {
+      let data = '';
+      res.on('data', (chunk) => (data += chunk));
+      res.on('end', () => {
+        cachedAnimation = data;
+        console.log('[Anim] screensaver.js actualizado desde GitHub');
+        resolve(data);
+      });
+    }).on('error', (err) => {
+      console.warn('[Anim] Sin conexión, usando versión local:', err.message);
+      resolve(null);
+    });
+  });
+}
+
+ipcMain.handle('get-animation', () => cachedAnimation);
 
 let windows = [];
 let screensaverActive = false;
@@ -196,9 +222,23 @@ function startBot() {
     );
   });
 
+  bot.onText(/\/actualizar/, async (msg) => {
+    if (!ok(msg)) return;
+    say(msg, '🔄 Descargando última versión de las animaciones...');
+    const code = await fetchAnimation();
+    if (!code) {
+      say(msg, '⚠️ Sin conexión, no se pudo actualizar.');
+      return;
+    }
+    windows.forEach(({ win }) => {
+      if (!win.isDestroyed()) win.webContents.reload();
+    });
+    say(msg, '✅ Animaciones actualizadas y pantallas recargadas.');
+  });
+
   bot.on('polling_error', (err) => console.error('[Bot] Error:', err.message));
 
-  console.log('[Bot] AdmiraBot conectado ✓');
+  console.log('[Bot] YarigAiBot conectado ✓');
 }
 
 // ─── Tray Icon ────────────────────────────────────────────────────────────────
@@ -315,7 +355,8 @@ function updateTrayMenu() {
 
 // ─── App Lifecycle ────────────────────────────────────────────────────────────
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await fetchAnimation(); // carga la versión más reciente al arrancar
   createWindows();
   setupTray();
   startBot();
